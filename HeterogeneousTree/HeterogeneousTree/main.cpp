@@ -5,24 +5,94 @@ using namespace std;
 
 void showTree(HeterogeneousTree&);
 
-int main()
+int main(int argc, char* argv[])
 {
-	HeterogeneousTree tree;
-	tree.append(8, 2);
-	tree.append((std::string)("bar"), 3);
-	tree.append((std::string)("baz"), 2);
-	tree.append(2.015, 1);
-	tree.append(2015, 0);
-	tree.append((std::string)("2015"), 0);
-	tree.append((std::string)("foo"), 0);
-	tree.append(6.28318, 1);
-	tree.append(9, 0);
-	tree.append((std::string)("hello"), 0);
+	const char* INPUT = "input";
+	const char* OUTPUT = "output";
+	if (argc > 1)
+	{
 
-	tree.serialize("output.txt");
-	HeterogeneousTree tree2;
-	tree2.deserialize("output.txt");
-	showTree(tree2);
+		if (std::strcmp(argv[1], "-i")==0)
+		{
+			if (argc < 3)
+			{
+				std::cout << "Need input file name!" << endl;
+				return -1;
+			}
+			INPUT = argv[2];
+			if (argc > 3)
+			{
+				if (std::strcmp(argv[3], "-i") == 0)
+				{
+					std::cout << "Already have this parametr: " << argv[3] << endl;
+					return -1;
+				}
+				else if (std::strcmp(argv[3], "-o") == 0)
+				{
+					if (argc < 5)
+					{
+						std::cout << "Need output file name!" << endl;
+						return -1;
+					}
+					OUTPUT = argv[4];
+				}
+				else
+				{
+					std::cout << "Unknowing parametr: " << argv[3] << endl;
+					return -1;
+				}
+			}
+
+		}
+		else if (std::strcmp(argv[1], "-o") == 0)
+		{
+			if (argc < 3)
+			{
+				std::cout << "Need output file name!" << endl;
+				return -1;
+			}
+			OUTPUT = argv[2];
+			if (argc > 3)
+			{
+				if (std::strcmp(argv[3], "-i") == 0)
+				{
+					if (argc < 5)
+					{
+						std::cout << "Need input file name!" << endl;
+						return -1;
+					}
+					INPUT = argv[4];
+
+				}
+				else if (std::strcmp(argv[3], "-o") == 0)
+				{
+					std::cout << "Already have this parametr: " << argv[3] << endl;
+					return -1;
+				}
+				else
+				{
+					std::cout << "Unknowing parametr: " << argv[3] << endl;
+					return -1;
+				}
+			}
+		}
+		else
+		{
+			std::cout << "Unknowing parametr: " << argv[1] << endl;
+			return -1;
+		}
+	}
+	HeterogeneousTree tree;
+	try
+	{
+		tree.deserialize(INPUT);
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "Can't deserialize" << endl;
+		return -1;
+	}
+	showTree(tree);
 
 
 	return 0;
@@ -38,23 +108,23 @@ void showTree(HeterogeneousTree& tree)
 		
 		if (level == tree.getNodeLevel(i))
 		{
-			cout << tree.operator[]<string>(i) << "   ";
+			std::cout << tree.operator[]<string>(i) << "   ";
 			q.push(tree.getNodeChildCount(i));
 		}
 		else
 		{
-			cout << endl;
+			std::cout << endl;
 			while (!q.empty())
 			{
 				int s = q.front();
 				for (int j = 0; j < s; j++)
 				{
-					(j != s-1) ? cout << "|-------" : cout << "|";
+					(j != s-1) ? std::cout << "|-------" : std::cout << "|";
 				}
-				cout << "        ";
+				std::cout << "        ";
 				q.pop();
 			}
-			cout << endl << tree.operator[]<string>(i) << "   ";
+			std::cout << endl << tree.operator[]<string>(i) << "   ";
 			q.push(tree.getNodeChildCount(i));
 			level++;
 		}
