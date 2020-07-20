@@ -78,3 +78,43 @@ void HeterogeneousTree::clear()
 	size = 0;
 	root = nullptr;
 }
+
+unsigned int HeterogeneousTree::getNodeLevel(unsigned int index)
+{
+	if (index >= size)
+		throw std::out_of_range("Out of range, check size!");
+	std::queue<BaseNode*> q;
+	int i = 0;
+	q.push(root);
+	BaseNode* temp;
+	temp = q.front();
+	while (i != index)
+	{
+		for (unsigned int j = 0; j < temp->maxChildCount; j++)
+			q.push(temp->childs[j]);
+		q.pop();
+		i++;
+		temp = q.front();
+	}
+	return temp->level;
+}
+
+unsigned int HeterogeneousTree::getNodeChildCount(unsigned int index)
+{
+	if (index >= size)
+		throw std::out_of_range("Out of range, check size!");
+	std::queue<BaseNode*> q;
+	int i = 0;
+	q.push(root);
+	BaseNode* temp;
+	temp = q.front();
+	while (i != index)
+	{
+		for (unsigned int j = 0; j < temp->maxChildCount; j++)
+			q.push(temp->childs[j]);
+		q.pop();
+		i++;
+		temp = q.front();
+	}
+	return temp->childCount;
+}

@@ -85,7 +85,8 @@ public:
 	bool isEmpty();
 	//void cut(unsigned int index);
 	void clear();
-
+	unsigned int getNodeLevel(unsigned int);
+	unsigned int getNodeChildCount(unsigned int);
 
 	template<class T>
 	T operator[](unsigned int index);
