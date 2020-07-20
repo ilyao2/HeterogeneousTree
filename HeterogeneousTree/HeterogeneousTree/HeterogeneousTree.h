@@ -9,7 +9,6 @@
 class HeterogeneousTree
 {
 private:
-	int size;
 
 	class BaseNode
 	{
@@ -23,12 +22,13 @@ private:
 			maxChildCount = ChildCount;
 			level = Level;
 			childs = new BaseNode*[maxChildCount];
-			for (int i = 0; i < maxChildCount; i++)
+			for (unsigned int i = 0; i < maxChildCount; i++)
 				childs[i] = nullptr;
 		}
+		
 		~BaseNode()
 		{
-			for (int i = 0; i < maxChildCount; i++)
+			for (unsigned int i = 0; i < maxChildCount; i++)
 				if (childs[i] != nullptr)
 				{
 					delete childs[i];
@@ -67,6 +67,7 @@ private:
 	};
 
 
+	int size;
 	BaseNode* root;
 
 	template <class T>
@@ -80,14 +81,17 @@ public:
 	void append(double val, unsigned int childCount);
 	void append(std::string val, unsigned int childCount);
 
-	//int getSize();
-	//bool isEmpty();
+	int getSize();
+	bool isEmpty();
 	//void cut(unsigned int index);
 	void clear();
 
 
-	//template<class T>
-	//T operator[](unsigned int index);
+	template<class T>
+	T operator[](unsigned int index);
+
+	template<>
+	std::string operator[]<std::string>(unsigned int index);
 };
 
 template<class T>
@@ -106,13 +110,14 @@ void HeterogeneousTree::append(T val, unsigned int childCount)
 		BaseNode* temp = q.front();
 		if (temp->isFull())
 		{
-			for (int i = 0; i < temp->maxChildCount; i++)
+			for (unsigned int i = 0; i < temp->maxChildCount; i++)
 				q.push(temp->childs[i]);
 			q.pop();
 		}
 		else
 		{
 			temp->childs[temp->childCount] = new Node<T>(val, childCount, temp->level+1);
+			temp->childCount++;
 			size++;
 			return;
 		}
@@ -120,22 +125,23 @@ void HeterogeneousTree::append(T val, unsigned int childCount)
 	throw std::overflow_error("Tree overflow!");
 }
 
-/*template<class T>
+template<class T>
 T HeterogeneousTree::operator[](unsigned int index)
 {
 	if (index >= size)
 		throw std::out_of_range("Out of range, check size!");
 	std::queue<BaseNode*> q;
 	int i = 0;
-	BaseNode* temp = null;
 	q.push(root);
+	BaseNode* temp;
+	temp = q.front();
 	while (i != index)
 	{
-		temp = q.front();
 		for (int j = 0; j < temp->maxChildCount; j++)
 			q.push(temp->childs[j]);
 		q.pop();
 		i++;
+		temp = q.front();
 	}
 	
 	if (temp->getType() == typeid(std::string))
@@ -167,15 +173,16 @@ std::string HeterogeneousTree::operator[]<std::string>(unsigned int index)
 		throw std::out_of_range("Out of range, check size!");
 	std::queue<BaseNode*> q;
 	int i = 0;
-	BaseNode* temp = nullptr;
 	q.push(root);
+	BaseNode* temp;
+	temp = q.front();
 	while (i != index)
 	{
-		temp = q.front();
-		for (int j = 0; j < temp->maxChildCount; j++)
+		for (unsigned int j = 0; j < temp->maxChildCount; j++)
 			q.push(temp->childs[j]);
 		q.pop();
 		i++;
+		temp = q.front();
 	}
 
 	if (temp->getType() == typeid(std::string))
@@ -204,4 +211,4 @@ std::string HeterogeneousTree::operator[]<std::string>(unsigned int index)
 	{
 		throw std::exception("Unknowing type");
 	}
-}*/
+}
