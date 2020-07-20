@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <typeinfo>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <queue>
 
@@ -85,8 +86,10 @@ public:
 	bool isEmpty();
 	//void cut(unsigned int index);
 	void clear();
-	unsigned int getNodeLevel(unsigned int);
-	unsigned int getNodeChildCount(unsigned int);
+	unsigned int getNodeLevel(unsigned int index);
+	unsigned int getNodeChildCount(unsigned int index);
+	void serialize(std::string path);
+	void deserialize(std::string path);
 
 	template<class T>
 	T operator[](unsigned int index);

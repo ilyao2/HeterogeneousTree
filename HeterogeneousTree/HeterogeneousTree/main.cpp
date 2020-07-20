@@ -19,9 +19,11 @@ int main()
 	tree.append(9, 0);
 	tree.append((std::string)("hello"), 0);
 
-
-	HeterogeneousTree tree2 = tree;
+	tree.serialize("output.txt");
+	HeterogeneousTree tree2;
+	tree2.deserialize("output.txt");
 	showTree(tree2);
+
 
 	return 0;
 }
