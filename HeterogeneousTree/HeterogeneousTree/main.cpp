@@ -9,10 +9,12 @@ int main(int argc, char* argv[])
 {
 	const char* INPUT = "input";
 	const char* OUTPUT = "output";
+
+	//ѕарсинг аргументов
 	if (argc > 1)
 	{
 
-		if (std::strcmp(argv[1], "-i")==0)
+		if (std::strcmp(argv[1], "-i") == 0)
 		{
 			if (argc < 3)
 			{
@@ -82,9 +84,10 @@ int main(int argc, char* argv[])
 			return -1;
 		}
 	}
+
 	HeterogeneousTree tree;
 
-
+	// онсольный интерфейс(меню)
 	int s1 = -1;
 	while (s1 != 0)
 	{
@@ -283,14 +286,16 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-
+//Ќе самый нагл€дный вывод, но в целом глубина и св€зи пон€тны
+//Ќе всегда видно от какой ветви лист при не полностью заполненом дереве.
+//ѕолностью заполненное - максимальное количество возможных потомков всех листов равно 0
 void showTree(HeterogeneousTree& tree)
 {
 	unsigned int level = 0;
 	std::queue<unsigned int> q;
 	for (unsigned int i = 0; i < tree.getSize(); i++)
 	{
-		
+
 		if (level == tree.getNodeLevel(i))
 		{
 			std::cout << tree.getValue<string>(i) << "   ";
@@ -304,7 +309,7 @@ void showTree(HeterogeneousTree& tree)
 				int s = q.front();
 				for (int j = 0; j < s; j++)
 				{
-					(j != s-1) ? std::cout << "|-------" : std::cout << "|";
+					(j != s - 1) ? std::cout << "|-------" : std::cout << "|";
 				}
 				std::cout << "        ";
 				q.pop();

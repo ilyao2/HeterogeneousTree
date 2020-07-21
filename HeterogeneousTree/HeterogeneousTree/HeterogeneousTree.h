@@ -11,6 +11,7 @@ class HeterogeneousTree
 {
 private:
 
+	//Базовая нода, для совместного хранения нод разных типов
 	class BaseNode
 	{
 	public:
@@ -22,11 +23,11 @@ private:
 		{
 			maxChildCount = ChildCount;
 			level = Level;
-			childs = new BaseNode*[maxChildCount];
+			childs = new BaseNode * [maxChildCount];
 			for (unsigned int i = 0; i < maxChildCount; i++)
 				childs[i] = nullptr;
 		}
-		
+
 		~BaseNode()
 		{
 			for (unsigned int i = 0; i < maxChildCount; i++)
@@ -47,8 +48,8 @@ private:
 		virtual const type_info& getType() = 0;
 
 	};
-	
-	
+
+
 	template <class T>
 	class Node : public BaseNode
 	{
@@ -58,7 +59,7 @@ private:
 		{
 			this->val = val;
 		}
-		~Node(){};
+		~Node() {};
 
 		const type_info& getType()
 		{
@@ -78,22 +79,37 @@ public:
 	HeterogeneousTree(const HeterogeneousTree&);
 	~HeterogeneousTree();
 
+	//При добавление всегда нужно указывать, сколько потомков может быть у ноды,
+	//т.к. заранее мы не знаем, ни тип, ни глубину, ни кол-во потомков
+	//Заполняться дерево будет по обходу в ширину
+	//Таким образом, когда будет заполнен один уровень, мы точно знаем, сколько нод будет на следующем
 	void append(int val, unsigned int childCount);
 	void append(double val, unsigned int childCount);
 	void append(std::string val, unsigned int childCount);
 
 	int getSize();
 	bool isEmpty();
+	//TODO: Возможно дописать при необходимости
 	//void cut(unsigned int index);
 	void clear();
 	unsigned int getNodeLevel(unsigned int index);
 	unsigned int getNodeChildCount(unsigned int index);
+
+	//Бинарной записью в файл записывается информация о количестве нод
+	//И информация о каждой ноде(тип,кол-во потомков, значение)
 	void serialize(std::string path);
 	void deserialize(std::string path);
 
+	//Шаблонный метод получения данных нужного типа
+	//Внутри будут происходить динамические касты
+	//У такого решения есть проблема
+	//При увеличении кол-ва типов, которые может хранить дерево,
+	//Нужно будет дописать много проверок на соответствие типу
 	template<class T>
 	T getValue(unsigned int index);
 
+	//Специализация для строки, чтобы всё без проблем кастилось, для упрощённого вывода
+	//К тому же это не встроенный тип
 	template<>
 	std::string getValue<std::string>(unsigned int index);
 };
@@ -120,7 +136,7 @@ void HeterogeneousTree::append(T val, unsigned int childCount)
 		}
 		else
 		{
-			temp->childs[temp->childCount] = new Node<T>(val, childCount, temp->level+1);
+			temp->childs[temp->childCount] = new Node<T>(val, childCount, temp->level + 1);
 			temp->childCount++;
 			size++;
 			return;
@@ -134,6 +150,9 @@ T HeterogeneousTree::getValue(unsigned int index)
 {
 	if (index >= size)
 		throw std::out_of_range("Out of range, check size!");
+	//Для обхода в ширину решил использовать очередь в силу удобства.
+	//При необходимости можно построить очередь на массивах
+	//Этот способ обхода несколько раз повторяется в других методах
 	std::queue<BaseNode*> q;
 	int i = 0;
 	q.push(root);
@@ -147,12 +166,12 @@ T HeterogeneousTree::getValue(unsigned int index)
 		i++;
 		temp = q.front();
 	}
-	
+
 	if (temp->getType() == typeid(std::string))
 	{
 		Node<std::string>* node = dynamic_cast<Node<std::string>*>(temp);
-		
-		return static_cast<T>(std::atof( node->val.c_str())); 
+
+		return static_cast<T>(std::atof(node->val.c_str()));
 	}
 	else if (temp->getType() == typeid(int))
 	{

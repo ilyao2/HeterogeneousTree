@@ -123,8 +123,8 @@ void HeterogeneousTree::serialize(std::string path)
 {
 	if (isEmpty())
 		throw std::exception("Tree is empty!");
-	std::ofstream out;          
-	out.open(path, std::ios::binary); 
+	std::ofstream out;
+	out.open(path, std::ios::binary);
 	if (out.is_open())
 	{
 		out.write((char*)&size, sizeof(size));
@@ -143,7 +143,7 @@ void HeterogeneousTree::serialize(std::string path)
 			{
 				Node<std::string>* node = dynamic_cast<Node<std::string>*>(temp);
 				std::string typeName = typeid(std::string).name();
-				int typeNameSize = typeName.length()+1;
+				int typeNameSize = typeName.length() + 1;
 				out.write((char*)&typeNameSize, sizeof(typeNameSize));
 				out.write((char*)(typeName.c_str()), typeNameSize);
 				out.write((char*)&node->maxChildCount, sizeof(node->maxChildCount));
@@ -183,7 +183,7 @@ void HeterogeneousTree::serialize(std::string path)
 	{
 		throw std::exception("Can't open file");
 	}
-	
+
 }
 
 void HeterogeneousTree::deserialize(std::string path)
