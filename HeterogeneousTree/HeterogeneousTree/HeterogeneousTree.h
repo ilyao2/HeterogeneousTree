@@ -92,10 +92,10 @@ public:
 	void deserialize(std::string path);
 
 	template<class T>
-	T operator[](unsigned int index);
+	T getValue(unsigned int index);
 
 	template<>
-	std::string operator[]<std::string>(unsigned int index);
+	std::string getValue<std::string>(unsigned int index);
 };
 
 template<class T>
@@ -130,7 +130,7 @@ void HeterogeneousTree::append(T val, unsigned int childCount)
 }
 
 template<class T>
-T HeterogeneousTree::operator[](unsigned int index)
+T HeterogeneousTree::getValue(unsigned int index)
 {
 	if (index >= size)
 		throw std::out_of_range("Out of range, check size!");
@@ -171,7 +171,7 @@ T HeterogeneousTree::operator[](unsigned int index)
 }
 
 template <>
-std::string HeterogeneousTree::operator[]<std::string>(unsigned int index)
+std::string HeterogeneousTree::getValue<std::string>(unsigned int index)
 {
 	if (index >= size)
 		throw std::out_of_range("Out of range, check size!");

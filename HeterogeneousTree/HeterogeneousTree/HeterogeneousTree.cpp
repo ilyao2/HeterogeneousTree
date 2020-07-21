@@ -121,6 +121,8 @@ unsigned int HeterogeneousTree::getNodeChildCount(unsigned int index)
 
 void HeterogeneousTree::serialize(std::string path)
 {
+	if (isEmpty())
+		throw std::exception("Tree is empty!");
 	std::ofstream out;          
 	out.open(path, std::ios::binary); 
 	if (out.is_open())
